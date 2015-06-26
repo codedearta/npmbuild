@@ -1,0 +1,1 @@
+cat <(echo -n '/* ') <(npm run name -s) <(echo -n '-') <(npm run version -s) <(echo -n ' (') <(npm run gitinfo -s) <(echo ') */')

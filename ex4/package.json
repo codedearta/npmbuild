@@ -1,0 +1,12 @@
+{
+    "scripts": {
+      "test:watch": "chokidar js -c 'npm test -s'",
+      "test": "karma start karma.conf.js --singleRun",
+    },
+    "devDependencies": {
+        "chokidar-cli": "latest",
+        "karma": "latest",
+        "karma-jasmine": "latest",
+        "karma-phantomjs-launcher": "latest"
+    }
+}

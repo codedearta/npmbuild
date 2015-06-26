@@ -1,0 +1,15 @@
+{
+    "scripts": {
+      "build": "npm run less:compile && npm run js:concat",
+    
+      "lint": "jshint **",
+      "less:compile": "lessc styles.less > app.css",
+      "js:concat": "cat `find ./js -type f -iname \"*.js\"` > app.js",
+
+      "prebuild:js": "npm run lint"
+    },
+    "devDependencies": {
+      "jshint": "latest",
+      "less": "latest"
+    }
+}

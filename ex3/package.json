@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "build:css" : "npm run compile -s | npm run minify -s",
+
+        "compile" : "lessc styles.less",
+        "minify" : "cssmin > styles.css"
+    },
+    "devDependencies": {
+        "less": "latest",
+        "cssmin": "latest"
+    }
+}

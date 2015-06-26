@@ -1,0 +1,101 @@
+Index: client/js/atsdcf/desktop/PanelLoader.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- client/js/atsdcf/desktop/PanelLoader.js	(revision e7cd7a588502b94b2f5ca300464e1df6eebd2341)
++++ client/js/atsdcf/desktop/PanelLoader.js	(revision )
+@@ -154,7 +154,6 @@
+ 
+         // calculate the panel padding (panel height - list height)
+         this.resizerOffset = Math.abs(tableTop - panelTop) + Math.abs(panelBot - tableBot) - panelHeaderHeight + this.listFilterHeight + footer;
+-        console.log('resizerOffset', this.resizerOffset);
+     }
+ 
+     loader.getBreakList = function (options) {
+\ No newline at end of file
+Index: client/js/atsdcf/directives/vTable/vTableResizer.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- client/js/atsdcf/directives/vTable/vTableResizer.js	(revision e7cd7a588502b94b2f5ca300464e1df6eebd2341)
++++ client/js/atsdcf/directives/vTable/vTableResizer.js	(revision )
+@@ -26,7 +26,7 @@
+ 
+ 
+                 var maxPossibleHeight = DesktopManager.getDesktopProp().Height - scope.panel.position.top - scope.panel.resizerOffset - bottomDragResizeOffset;
+-                console.log('getMaxHeigth()', maxPossibleHeight);
++                console.log('getMaxHeigth(): maxPossibleHeight', maxPossibleHeight);
+ 
+ 
+                 var userViewportMaxHeight = _.min([maxPossibleHeight, maxTableHeight]);
+@@ -51,13 +51,11 @@
+                         maxHeight: getMaxHeight(),
+                         resize: _.debounce(function () {
+ 
+-                            //attrs.$set('viewportHeight', element.height());
+-                            //attrs.$set('viewportMaxHeight', element.height());
+-                            //var userViewportMaxHeight = getMaxHeight();
+                             attrs.$set('viewportHeight', userViewportMaxHeight);
+                             attrs.$set('viewportMaxHeight', userViewportMaxHeight);
+ 
+                             DesktopManager.reposition();
++                            $scope.$broadcast('vTableRefresh');
+                             scope.$digest();
+                         }, 60)
+                     });
+\ No newline at end of file
+Index: client/js/atsdcf/desktop/DesktopWatcherDirective.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- client/js/atsdcf/desktop/DesktopWatcherDirective.js	(revision e7cd7a588502b94b2f5ca300464e1df6eebd2341)
++++ client/js/atsdcf/desktop/DesktopWatcherDirective.js	(revision )
+@@ -189,21 +189,36 @@
+             }
+ 
+ 
+-            function makePanelResizable(panel) {
++            function makePanelResizable(panelHtml) {
++
++                var panelId = $(panelHtml).attr('id');
++                var panelObject = DesktopManager.panelById(panelId);
+                 var desktopHeight = DesktopManager.getDesktopProp().Height;
+ 
+                 // is set if max possible height needs be updated.
+-                var scrollingArea = $(panel).find('.scrolling-area');
+-                var footer = $(panel).find('.list-footer');
++                var scrollingArea = $(panelHtml).find('.scrolling-area');
++                //var footer = $(panelHtml).find('.list-footer');
+                 if (scrollingArea.length > 0) {
+-                    var top = scrollingArea.offset().top;
+-                    var maxHeight = 30 + desktopHeight - top;
+-                    if (footer.length > 0) {
+-                        maxHeight -= footer.height();
+-                    }
++                    //var top = scrollingArea.offset().top;
+ 
++                    var panelElement = scrollingArea.closest('.panel');
++                    var tableElement = scrollingArea.closest('.vTableWindow');
++                    //console.log('panel',panelHtml);
++                    console.log('panelElement',panelElement);
++                    console.log('tableElement',tableElement);
++                    panelObject.calculateResizerOffset(panelElement,tableElement);
++                    var offset = panelObject.resizerOffset;
++                    console.log('offset',offset);
++                    console.log('desktopHeight',desktopHeight);
+ 
++                    var maxHeight = desktopHeight - offset;
++                    //var maxHeight = 30 + desktopHeight - top;
++                    //if (footer.length > 0) {
++                    //    maxHeight -= footer.height();
++                    //}
++
+                     var maxTableHeight = scrollingArea.find('.vTableWrapper').height();
++
+                     scrollingArea.resizable();
+                     scrollingArea.resizable("option", "maxHeight", _.min([maxHeight, maxTableHeight]));
+                 }
+\ No newline at end of file

@@ -1,0 +1,14 @@
+{
+    "scripts": {
+      "start" : "npm run open -s & npm run livereload:serve -s & npm run serve -- 9090 -s",
+
+      "serve" : "serve . --port ",
+      "livereload:serve" :"live-reload . --port 9091",
+      "open" : "opener http://localhost:9090"
+    },
+    "devDependencies": {
+      "live-reload" : "latest",
+      "serve" : "latest",
+      "opener" : "latest"
+    }
+}
